@@ -1,0 +1,8 @@
+
+{
+  "name": "securebank-validator",
+  "version": "1.0.0",
+  "description": "Validador local de clientes SecureBank",
+  "main": "index.js",
+  "license": "MIT"
+}

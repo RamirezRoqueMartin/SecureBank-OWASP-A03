@@ -1,5 +1,9 @@
+
 const express = require("express");
 const path = require("path");
+
+// Dependencia npm local simulada
+const { validarCliente } = require("securebank-validator");
 
 const app = express();
 
@@ -8,41 +12,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 const clientes = [];
+
 app.get("/", (req, res) => {
-
     res.sendFile(
-        path.join(
-            __dirname,
-            "views",
-            "home.html"
-        )
+        path.join(__dirname, "views", "home.html")
     );
-
 });
 
 app.get("/cliente", (req, res) => {
-
     res.sendFile(
-        path.join(
-            __dirname,
-            "views",
-            "cliente.html"
-        )
+        path.join(__dirname, "views", "cliente.html")
     );
-
 });
 
 // Página principal
 app.get("/admin", (req, res) => {
-
     res.sendFile(
-        path.join(
-            __dirname,
-            "views",
-            "index.html"
-        )
+        path.join(__dirname, "views", "index.html")
     );
-
 });
 
 // Obtener clientes
@@ -53,23 +40,31 @@ app.get("/api/clientes", (req, res) => {
 // Registrar cliente
 app.post("/api/clientes", (req, res) => {
 
+    // Validación mediante dependencia npm local
+    if (!validarCliente(req.body)) {
+        return res.status(400).json({
+            success: false,
+            mensaje: "El nombre del cliente es obligatorio"
+        });
+    }
+
     const {
-    nombre,
-    correo,
-    telefono,
-    cuenta,
-    tipoCliente
-} = req.body;
+        nombre,
+        correo,
+        telefono,
+        cuenta,
+        tipoCliente
+    } = req.body;
 
     const nuevoCliente = {
-    id: clientes.length + 1,
-    nombre,
-    correo,
-    telefono,
-    cuenta,
-    tipoCliente,
-    fechaRegistro: new Date().toLocaleString()
-};
+        id: clientes.length + 1,
+        nombre,
+        correo,
+        telefono,
+        cuenta,
+        tipoCliente,
+        fechaRegistro: new Date().toLocaleString()
+    };
 
     clientes.push(nuevoCliente);
 
